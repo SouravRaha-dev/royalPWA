@@ -3992,4 +3992,10 @@ responsive
     font-size: 24px;
     }
 
+.is-invisible {
+    opacity: 0;
+}
 
+.subscription-details {
+    transition: opacity 1s;
+}

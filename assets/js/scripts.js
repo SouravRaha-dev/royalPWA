@@ -320,7 +320,13 @@
         //Google map end
       
     'use strict';
+        let isSubscribed = false;
     let swRegistration = null;
+    const pushButton = document.querySelector('.notify-btn');
+    const FIREBASE_AUTH =  firebase.auth();
+    const FIREBASE_MESSAGING = firebase.messaging();
+    const FIREBASE_DATABASE = firebase.database();
+
      //serviceworker starts
     if ('serviceWorker' in navigator && 'PushManager' in window) {
       console.log('Service Worker and Push is supported');
@@ -328,20 +334,39 @@
       .then(function(swReg) {
         console.log('Service Worker is registered', swReg);
         swRegistration = swReg;
+        initializeUI();
       })
       .catch(function(error) {
         console.error('Service Worker Error', error);
       });
-    } else {
+     } else {
     console.warn('Push messaging is not supported');
     pushButton.textContent = 'Push Not Supported';
-    }
-   
-        
-        
-        
+     }
     });
-    
+
+    function initializeUI() {
+        pushButton.addEventListener('click', function() {
+            if (isSubscribed) {
+                    // TODO: Unsubscribe user
+            } else {
+                    subscribeUser();
+                }
+            });
+
+            // Set the initial subscription value
+        swRegistration.pushManager.getSubscription()
+            .then(function(subscription) {
+                isSubscribed = !(subscription === null);
+                updateSubscriptionOnServer(subscription);
+                if (isSubscribed) {
+                    console.log('User is subscribed!');
+                } else {
+                        console.log('User is not subscribed');
+                    }
+                });
+        }
+
 })(jQuery);
 
 
